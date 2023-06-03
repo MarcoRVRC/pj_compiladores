@@ -1,0 +1,101 @@
+package umg.compiladores;
+
+import java_cup.runtime.*;
+
+terminal SYSTEM, SALIDA, PUNTO, IMPRIMIR, IMPRIMIR_LINEA, PARENTESIS_ABRE, PARENTESIS_CIERRA, PUNTO_COMA, NOT, COMILLA_SIMPLE_CIERRA;
+terminal MULTI, SUMA, COMA, RESTA, DIVIDIR, DOS_PUNTOS, MENOR, ASIGNAR, MAYOR, TEXTO, CORCHETE_ABRE, CORCHETE_CIERRA;
+terminal POTENCIA, GUION_BAJO, LLAVE_ABRE, LLAVE_CIERRA, DIFERENTE, COMILLAS_DOBLES, AND, MENOR_IGUAL, IGUAL, MAYOR_IGUAL, HACER, SI;
+terminal IN, OR, REPETIR, INTEGER, NUEVO, CASO, ADEMAS, LONG, SIGUIENTE, VERDAD, VACIO, ROMPER, CLASE, FALSO, FLOAT, SHORT, MIENTRAS;
+terminal DOBLE, RETORNAR, CAMBIO, SCAN, BOOL, SIGUIENTE_INT, SIGUIENTE_LINEA, SIGUIENTE_LONG, SIGUIENTE_FLOAT, SIGUIENTE_SHORT;
+terminal SIGUIENTE_DOBLE, SIGUIENTE_BOOL, PRIVADO, PUBLICO, ARGS, MAIN, STATIC;
+terminal Integer DIGITO;
+terminal String IDENTIFICADOR;
+
+non terminal inicio, tipo_imprimir, tipo_metodo, imprimir, metodo, main, funcionalidad, operador, aritmetica, declarar, parametros, estado_bool, concatenar, retorno_metodo;
+
+start with inicio;
+
+inicio                  ::= PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE main LLAVE_CIERRA                                                                                                                {: System.out.println("Nombre de clase : " + nom_clase_val.toString()); :}
+                        |   PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE funcionalidad main LLAVE_CIERRA                                                                                          {: System.out.println("Nombre de clase : " + nom_clase_val.toString()); :};
+
+main                    ::= PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA             {: RESULT = main_val.toString(); :}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA metodo      {: RESULT = main_val.toString(); :}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA             {: RESULT = main_val.toString(); :}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA metodo      {: RESULT = main_val.toString(); :};
+
+declarar                ::= TEXTO
+                        |   INTEGER
+                        |   LONG
+                        |   FLOAT
+                        |   DOBLE
+                        |   SHORT
+                        |   BOOL;
+
+parametros              ::= declarar IDENTIFICADOR
+                        |   declarar IDENTIFICADOR COMA parametros;
+
+metodo                  ::= PUBLICO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :}
+                        |   PRIVADO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :};
+
+tipo_metodo             ::= VACIO IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA                                                                  {: System.out.println("Resultado : " + id_metodo_val.toString()); :}
+                        |   declarar IDENTIFICADOR PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA
+                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA                             {: System.out.println("Resultado : " + id_metodo_val.toString()); :}
+                        |   declarar IDENTIFICADOR PARENTESIS_ABRE parametros PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA
+                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE parametros PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA;
+
+funcionalidad           ::= imprimir funcionalidad
+                        |   SCAN IDENTIFICADOR ASIGNAR NUEVO SCAN PARENTESIS_ABRE PARENTESIS_CIERRA funcionalidad
+                        |   INTEGER:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                             {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   LONG:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                               {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   SHORT:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                                {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   TEXTO:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                             {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   BOOL:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                                  {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   FLOAT:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                                        {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   DOBLE:tipo_dato_val IDENTIFICADOR:id_metodo_val funcionalidad                                                                                {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   INTEGER:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO funcionalidad                                                            {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   LONG:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO funcionalidad                                                             {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   SHORT:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO funcionalidad                                                                  {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   INTEGER:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR RESTA DIGITO funcionalidad                                                            {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   LONG:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR RESTA DIGITO funcionalidad                                                             {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   SHORT:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR RESTA DIGITO funcionalidad
+                        |   INTEGER:tipo_dato_val funcionalidad                                                            {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
+                        |   LONG:tipo_dato_val funcionalidad                                                             {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
+                        |   SHORT:tipo_dato_val funcionalidad                                                                  {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
+                        |   TEXTO:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR COMILLAS_DOBLES funcionalidad                                                        {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   BOOL:tipo_dato_val funcionalidad                                                               {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
+                        |   FLOAT:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO PUNTO DIGITO funcionalidad                                                   {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   FLOAT:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR RESTA DIGITO PUNTO DIGITO funcionalidad
+                        |   DOBLE:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO PUNTO DIGITO funcionalidad
+                        |   DOBLE:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR RESTA DIGITO PUNTO DIGITO funcionalidad                                                  {: System.out.println("Resultado : " + tipo_dato_val.toString() + id_metodo_val.toString()); :}
+                        |   FLOAT:tipo_dato_val funcionalidad                                                   {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
+                        |   DOBLE:tipo_dato_val funcionalidad
+                        |   IDENTIFICADOR ASIGNAR IDENTIFICADOR funcionalidad
+                        |   IDENTIFICADOR ASIGNAR aritmetica funcionalidad
+                        |   IDENTIFICADOR ASIGNAR estado_bool PUNTO_COMA
+                        |   PUNTO_COMA funcionalidad
+                        |   PUNTO_COMA;
+
+aritmetica              ::= DIGITO operador DIGITO
+                        |   IDENTIFICADOR operador IDENTIFICADOR;
+
+imprimir                ::= SYSTEM:sys_val PUNTO SALIDA PUNTO tipo_imprimir PARENTESIS_ABRE concatenar PARENTESIS_CIERRA PUNTO_COMA                                                         {: System.out.println("Resultado : " + sys_val.toString()); :};
+
+tipo_imprimir           ::= IMPRIMIR:imprimir_val                                                                                                                                           {: RESULT = imprimir_val.toString(); :}
+                        |   IMPRIMIR_LINEA:imprimir_linea_val                                                                                                                               {: RESULT = imprimir_linea_val.toString(); :};
+
+retorno_metodo          ::= RETORNAR IDENTIFICADOR PUNTO_COMA;
+
+concatenar              ::= COMILLAS_DOBLES
+                        |   IDENTIFICADOR
+                        |   IDENTIFICADOR SUMA concatenar
+                        |   COMILLAS_DOBLES SUMA concatenar;
+
+estado_bool             ::= VERDAD
+                        |   FALSO;
+
+operador                ::= SUMA
+                        |   RESTA
+                        |   MULTI
+                        |   DIVIDIR
+                        |   POTENCIA;
+
