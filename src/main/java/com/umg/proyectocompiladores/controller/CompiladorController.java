@@ -21,7 +21,7 @@ import java.io.Reader;
 import umg.compiladores.*;
 
 @RestController
-@RequestMapping("/compilador")
+
 public class CompiladorController {
 
     StringBuilder builder = new StringBuilder();
@@ -29,8 +29,8 @@ public class CompiladorController {
     String nomArchivo = "codigoCompilar.java";
     String ruta = "/archivo/";
 
-    @PostMapping(value = "/traducir")
-    public void recibirJava(@RequestParam("txtJava") String textoJava,
+    @PostMapping(value = "/recibirJava")
+    public String  recibirJava(@RequestParam("txtJava") String textoJava,
                             @RequestParam("fileJava") MultipartFile fileJava) {
 
         builder.append(ruta);
@@ -47,16 +47,17 @@ public class CompiladorController {
             leerTexto(textoJava);
         } else if (!fileJava.isEmpty()) {
             System.out.println("Se recibio Archivo");
-            leerArchivo(fileJava);
+        return    leerArchivo(fileJava);
         } else if (!textoJava.isEmpty() && !fileJava.isEmpty()) {
             System.out.println("Solo debe ingresar un medio");
         } else {
             System.out.println("No se recibio ninguna entrada");
         }
+        return null;
     }
 
 
-    public void leerArchivo(MultipartFile file) {
+    public String leerArchivo(MultipartFile file) {
         byte[] bytes;
         try {
             bytes = file.getBytes();
@@ -68,9 +69,11 @@ public class CompiladorController {
         try {
             Files.write(path, bytes);
             compilarCup();
+            return "Se compilo correctamente";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public void leerTexto(String txtJava) {

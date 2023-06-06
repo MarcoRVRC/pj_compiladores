@@ -18,13 +18,23 @@ import java_cup.runtime.*;
 %}
 
 palabra = [a-zA-Z]+
-digito = [0-9]+
-identificador = [a-zA-Z][a-zA-Z0-9]*
+digito = -?[0-9]+
+digito_double = -?[0-9]+(\.[0-9]+)?
+digito_long = -?[0-9]+(\.[0-9]+)?
+identificador = [a-zA-Z_][a-zA-Z0-9_]*
 espacios_blanco = [\r|\n|\r\n| |\t]
 
 %%
 
 //Reglas léxicas
+
+"main"     { System.out.println("Lexema: "
+              + yytext()
+              + " columna: "
+              + yychar
+              + " fila: "
+              + yyline ); return symbol(sym.MAIN, yytext());}
+
 "public"     { System.out.println("Lexema: "
               + yytext()
               + " columna: "
@@ -53,12 +63,6 @@ espacios_blanco = [\r|\n|\r\n| |\t]
               + " fila: "
               + yyline ); return symbol(sym.CLASE, yytext());}
 
-"main"     { System.out.println("Lexema: "
-              + yytext()
-              + " columna: "
-              + yychar
-              + " fila: "
-              + yyline ); return symbol(sym.MAIN, yytext());}
 
 "args"     { System.out.println("Lexema: "
               + yytext()
@@ -461,5 +465,19 @@ espacios_blanco = [\r|\n|\r\n| |\t]
               + yychar
               + " fila: "
               + yyline ); return symbol(sym.DIGITO, new Integer(yytext()));}
+
+{digito_double}    { System.out.println("Lexema: "
+                      + yytext()
+                      + " columna: "
+                      + yychar
+                      + " fila: "
+                      + yyline ); return symbol(sym.DIGITO_DOBLE, new Double(yytext()));}
+
+{digito_long}    { System.out.println("Lexema: "
+                      + yytext()
+                      + " columna: "
+                      + yychar
+                      + " fila: "
+                      + yyline ); return symbol(sym.DIGITO_LONG, new Long(yytext()));}
 
 {espacios_blanco}   { /*Ignorar estos símbolos*/ }
