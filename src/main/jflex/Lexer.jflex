@@ -132,12 +132,15 @@ espacios_blanco = [\r|\n|\r\n| |\t]
               + yychar
               + " fila: "
               + yyline ); return symbol(sym.SI, yytext());}
+
 "else"         { System.out.println("Lexema: "
               + yytext()
               + " columna: "
               + yychar
               + " fila: "
-              + yyline ); return symbol(sym.ADEMAS, yytext());}
+              + yyline ); return symbol(sym.SINO, yytext());}
+
+
 "for"         { System.out.println("Lexema: "
               + yytext()
               + " columna: "
@@ -173,7 +176,15 @@ espacios_blanco = [\r|\n|\r\n| |\t]
               + " columna: "
               + yychar
               + " fila: "
-              + yyline ); return symbol(sym.ROMPER, yytext());}
+              + yyline ); return symbol(sym.BREAK, yytext());}
+
+"default"   { System.out.println("Lexema: "
+              + yytext()
+              + " columna: "
+              + yychar
+              + " fila: "
+              + yyline ); return symbol(sym.DEFAULT, yytext());}
+
 "Scanner"         { System.out.println("Lexema: "
               + yytext()
               + " columna: "
@@ -269,7 +280,7 @@ espacios_blanco = [\r|\n|\r\n| |\t]
               + " columna: "
               + yychar
               + " fila: "
-              + yyline ); return symbol(sym.VERDAD, yytext());}
+              + yyline ); return symbol(sym.VERDADERO, yytext());}
 "false"         { System.out.println("Lexema: "
               + yytext()
               + " columna: "

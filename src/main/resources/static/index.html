@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<form class="container" action="/recibirJava" method="post" enctype="multipart/form-data">
+<form class="container" enctype="multipart/form-data">
     <div class="row justify-content-center">
         <div class="card o-hidden border-0 shadow-lg my-5">
             <div class="card-body p-0">
@@ -65,7 +65,7 @@
 
         var formData = new FormData(this);
 
-        fetch('/recibirJava', {
+        fetch('/traducir', {
             method: 'POST',
             body: formData
         })

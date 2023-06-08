@@ -11,12 +11,14 @@ terminal Short DIGITO_SHORT;
 terminal String IDENTIFICADOR;
 terminal SYSTEM, SALIDA, PUNTO, IMPRIMIR, IMPRIMIR_LINEA, PARENTESIS_ABRE, PARENTESIS_CIERRA, PUNTO_COMA, NOT, COMILLA_SIMPLE_CIERRA;
 terminal MULTI, SUMA, COMA, RESTA, DIVIDIR, DOS_PUNTOS, MENOR, ASIGNAR, MAYOR, TEXTO, CORCHETE_ABRE, CORCHETE_CIERRA;
-terminal POTENCIA, GUION_BAJO, LLAVE_ABRE, LLAVE_CIERRA, DIFERENTE, COMILLAS_DOBLES, AND, MENOR_IGUAL, IGUAL, MAYOR_IGUAL, HACER, SI;
-terminal IN, OR, REPETIR, INTEGER, NUEVO, CASO, ADEMAS, LONG, SIGUIENTE, VERDAD, VACIO, ROMPER, CLASE, FALSO, FLOAT, SHORT, MIENTRAS;
+terminal POTENCIA, GUION_BAJO, LLAVE_ABRE, LLAVE_CIERRA, DIFERENTE, COMILLAS_DOBLES, AND, MENOR_IGUAL, IGUAL, MAYOR_IGUAL, HACER, SI, SINO, DEFAULT;
+terminal IN, OR, REPETIR, INTEGER, NUEVO, CASO, BREAK, ADEMAS, LONG, SIGUIENTE, VERDADERO, VACIO, CLASE, FALSO, FLOAT, SHORT, MIENTRAS;
 terminal DOBLE, RETORNAR, CAMBIO, SCAN, BOOL, SIGUIENTE_INT, SIGUIENTE_LINEA, SIGUIENTE_LONG, SIGUIENTE_FLOAT, SIGUIENTE_SHORT;
 
 
-non terminal clase, tipo_imprimir, tipo_metodo, imprimir, metodo, metodo_main, funcionalidad, operador, aritmetica, declarar, parametros, estado_bool, concatenar, retorno_metodo;
+non terminal clase, tipo_imprimir, tipo_metodo, imprimir, metodo, metodo_main, funcionalidad, valor,
+               estructuras_control,condiciones, condicional_num, condicional_bool, condicional_string, operador, aritmetica, declarar, parametros, estado_bool, concatenar, retorno_metodo, si, si_multiple,
+               caso;
 
 start with clase;
 
@@ -71,11 +73,14 @@ funcionalidad           ::= imprimir funcionalidad
                         |   DOBLE:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO_DOBLE funcionalidad
                         |   FLOAT:tipo_dato_val funcionalidad                                                   {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
                         |   DOBLE:tipo_dato_val funcionalidad
-                        |   IDENTIFICADOR ASIGNAR IDENTIFICADOR funcionalidad
+                        |   DIGITO_DOBLE ASIGNAR funcionalidad
                         |   IDENTIFICADOR ASIGNAR aritmetica funcionalidad
                         |   IDENTIFICADOR ASIGNAR estado_bool PUNTO_COMA
+                        |   IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA
                         |   PUNTO_COMA funcionalidad
                         |   COMA IDENTIFICADOR funcionalidad
+                        |   si funcionalidad
+                        |   si_multiple funcionalidad
                         |   PUNTO_COMA;
 
 aritmetica              ::= DIGITO operador DIGITO
@@ -87,7 +92,7 @@ imprimir                ::= SYSTEM:sys_val PUNTO SALIDA PUNTO tipo_imprimir PARE
 tipo_imprimir           ::= IMPRIMIR:imprimir_val                                                                                                                                           {: RESULT = imprimir_val.toString(); :}
                         |   IMPRIMIR_LINEA:imprimir_linea_val                                                                                                                               {: RESULT = imprimir_linea_val.toString(); :};
 
-estado_bool             ::= VERDAD
+estado_bool             ::= VERDADERO
                         |   FALSO;
 
 operador                ::= SUMA
@@ -103,7 +108,62 @@ concatenar              ::= COMILLAS_DOBLES
                         |   IDENTIFICADOR SUMA concatenar
                         |   COMILLAS_DOBLES SUMA concatenar;
 
+valor                   ::= DIGITO
+                        |   DIGITO_LONG
+                        |   DIGITO_FLOAT
+                        |   DIGITO_DOBLE
+                        |   TEXTO
+                        |   VERDADERO
+                        |   FALSO;
+
+
+si ::=                 SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
+                               | SINO LLAVE_ABRE funcionalidad LLAVE_CIERRA
+                               | SINO SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
 
 
 
+;
 
+si_multiple     ::= CAMBIO PARENTESIS_ABRE IDENTIFICADOR PARENTESIS_CIERRA LLAVE_ABRE caso LLAVE_CIERRA
+
+;
+
+caso        ::= CASO DIGITO DOS_PUNTOS funcionalidad BREAK PUNTO_COMA caso
+                | CASO DIGITO DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
+                | CASO SHORT DOS_PUNTOS funcionalidad BREAK
+                | CASO COMILLAS_DOBLES DOS_PUNTOS funcionalidad BREAK
+                | DEFAULT DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
+                ;
+
+condiciones::= IDENTIFICADOR condicional_num IDENTIFICADOR
+            |   IDENTIFICADOR condicional_num DIGITO
+            |   IDENTIFICADOR condicional_num DIGITO_LONG
+            |   IDENTIFICADOR condicional_num DIGITO_FLOAT
+            |   IDENTIFICADOR condicional_num DIGITO_DOBLE
+            |   IDENTIFICADOR condicional_string COMILLAS_DOBLES
+            |   IDENTIFICADOR condicional_bool estado_bool
+                ;
+
+condicional_num ::=
+                |   MAYOR
+                |   MENOR
+                |   IGUAL
+                |   DIFERENTE
+                |   MAYOR_IGUAL
+                |   MENOR_IGUAL
+;
+
+condicional_bool::=
+                |   AND
+                |   OR
+                |   NOT;
+
+condicional_string::=
+                |   IGUAL
+                |   DIFERENTE
+                ;
+
+
+/*funcionalidad_conrtrol ::=
+                            ;*/

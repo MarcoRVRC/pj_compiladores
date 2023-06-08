@@ -29,8 +29,8 @@ public class CompiladorController {
     String nomArchivo = "codigoCompilar.java";
     String ruta = "/archivo/";
 
-    @PostMapping(value = "/recibirJava")
-    public String  recibirJava(@RequestParam("txtJava") String textoJava,
+    @PostMapping(value = "/traducir")
+    public String  traducir(@RequestParam("txtJava") String textoJava,
                             @RequestParam("fileJava") MultipartFile fileJava) {
 
         builder.append(ruta);
@@ -98,4 +98,6 @@ public class CompiladorController {
             throw new RuntimeException(e);
         }
     }
+
+
 }
