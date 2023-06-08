@@ -76,7 +76,8 @@ funcionalidad           ::= imprimir funcionalidad
                         |   DIGITO_DOBLE ASIGNAR funcionalidad
                         |   IDENTIFICADOR ASIGNAR aritmetica funcionalidad
                         |   IDENTIFICADOR ASIGNAR estado_bool PUNTO_COMA
-                        |   IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA
+                        |   IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA funcionalidad
+                        |   TEXTO COMILLAS_DOBLES PUNTO_COMA funcionalidad
                         |   PUNTO_COMA funcionalidad
                         |   COMA IDENTIFICADOR funcionalidad
                         |   si funcionalidad
@@ -118,8 +119,10 @@ valor                   ::= DIGITO
 
 
 si ::=                 SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
+                               | SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE si LLAVE_CIERRA
                                | SINO LLAVE_ABRE funcionalidad LLAVE_CIERRA
                                | SINO SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
+
 
 
 
@@ -131,8 +134,10 @@ si_multiple     ::= CAMBIO PARENTESIS_ABRE IDENTIFICADOR PARENTESIS_CIERRA LLAVE
 
 caso        ::= CASO DIGITO DOS_PUNTOS funcionalidad BREAK PUNTO_COMA caso
                 | CASO DIGITO DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
-                | CASO SHORT DOS_PUNTOS funcionalidad BREAK
-                | CASO COMILLAS_DOBLES DOS_PUNTOS funcionalidad BREAK
+                | CASO SHORT DOS_PUNTOS funcionalidad BREAK caso
+                | CASO SHORT DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
+                | CASO COMILLAS_DOBLES DOS_PUNTOS funcionalidad BREAK PUNTO_COMA caso
+                | CASO COMILLAS_DOBLES DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
                 | DEFAULT DOS_PUNTOS funcionalidad BREAK PUNTO_COMA
                 ;
 
