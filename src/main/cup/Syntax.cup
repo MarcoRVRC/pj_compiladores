@@ -23,7 +23,7 @@ terminal DOBLE, RETORNAR, CAMBIO, SCAN, BOOL, SIGUIENTE_INT, SIGUIENTE_LINEA, SI
 
 non terminal clase, tipo_imprimir, tipo_metodo, imprimir, metodo, metodo_main, funcionalidad, valor, asignar,
                estructuras_control,condiciones, condicional_num, condicional_bool, condicional_string, operador, aritmetica, declarar, parametros, estado_bool, concatenar, retorno_metodo, si, si_multiple,
-               caso, repetir, mientras;
+               caso, repetir, mientras, hacer_mientras;
 
 start with clase;
 
@@ -96,6 +96,7 @@ funcionalidad           ::= imprimir funcionalidad
                         |   si_multiple funcionalidad
                         |   repetir
                         |   repetir funcionalidad
+                        |   mientras funcionalidad
                         |   PUNTO_COMA;
 
 asignar      ::=    IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA funcionalidad
@@ -194,7 +195,9 @@ repetir ::= REPETIR PARENTESIS_ABRE INTEGER IDENTIFICADOR ASIGNAR DIGITO PUNTO_C
 
 ;
 
-mientras ::=
+mientras ::= MIENTRAS:while_val PARENTESIS_ABRE:parentesis_abre_val condiciones PARENTESIS_CIERRA:parentesis_cierra_val LLAVE_ABRE:llave_abre_val funcionalidad LLAVE_CIERRA:llave_cierra_val
     ;
+
+
 /*funcionalidad_conrtrol ::=
                             ;*/
