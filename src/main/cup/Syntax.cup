@@ -30,29 +30,31 @@ start with clase;
 
 
 clase                ::= PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE:dos_puntos metodo_main LLAVE_CIERRA                  {: resultados2.add("class " + nom_clase_val.toString() + ": ");:}
-                        |   PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE funcionalidad metodo_main LLAVE_CIERRA  {: resultados2.add("class " + nom_clase_val.toString() + ": ");:}
+                        |   PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE funcionalidad:funcionalidad metodo_main:main LLAVE_CIERRA  {: resultados2.add("class " + nom_clase_val.toString() + ": " + funcionalidad.toString() + main.toString() );:}
 
 ;
 
 
-metodo_main          ::= PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA  {: resultados2.add("def ___init___(self): ");:}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA metodo      {: resultados2.add("def ___init___(self): ");:}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA             {: resultados2.add("def ___init___(self): ");:}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA metodo      {: resultados2.add("def ___init___(self): ");:}
+metodo_main          ::= PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad:funcionalidad LLAVE_CIERRA  {: resultados2.add("def " + main_val.toString() + "(self):");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad:funcionalidad LLAVE_CIERRA metodo      {: resultados2.add("def " + main_val.toString() + "(self):");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA             {: resultados2.add("def " + main_val.toString() + "(self):");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA metodo      {: resultados2.add("def " + main_val.toString() + "(self):");:}
 ;
-metodo                  ::= PUBLICO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :}
-                        |   PRIVADO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :};
+metodo                  ::= PUBLICO:tipo_metodo_val tipo_metodo:t_metodo
+                        |   PRIVADO:tipo_metodo_val tipo_metodo:t_metodo
 
-
+;
 parametros              ::= declarar IDENTIFICADOR
                         |   declarar IDENTIFICADOR COMA parametros;
 
 
-tipo_metodo             ::= VACIO IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA                                                                  {: System.out.println("Resultado : " + id_metodo_val.toString()); :}
-                        |   declarar IDENTIFICADOR PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA
-                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA                             {: System.out.println("Resultado : " + id_metodo_val.toString()); :}
-                        |   declarar IDENTIFICADOR PARENTESIS_ABRE parametros PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA
-                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE parametros PARENTESIS_CIERRA LLAVE_ABRE funcionalidad retorno_metodo LLAVE_CIERRA;
+tipo_metodo             ::= VACIO IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE:parR PARENTESIS_CIERRA:parC LLAVE_ABRE:lA funcionalidad LLAVE_CIERRA:lC            {: resultados2.add(id_metodo_val.toString() + parR.toString() +  parC.toString() + lA.toString() + lC.toString()); :}
+                        |   declarar IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE:parR PARENTESIS_CIERRA:parC LLAVE_ABRE:lA funcionalidad retorno_metodo LLAVE_CIERRA:lC       {: resultados2.add(id_metodo_val.toString() + parR.toString() +  parC.toString() + lA.toString() + lC.toString()); :}
+                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE:parR PARENTESIS_CIERRA:parC LLAVE_ABRE:lA funcionalidad retorno_metodo LLAVE_CIERRA:lC           {: resultados2.add(id_metodo_val.toString() + parR.toString() +  parC.toString() + lA.toString() + lC.toString()); :}
+                        |   declarar IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE:parR parametros PARENTESIS_CIERRA:parC LLAVE_ABRE:lA funcionalidad retorno_metodo LLAVE_CIERRA:lC            {: resultados2.add(id_metodo_val.toString() + parR.toString() +  parC.toString() + lA.toString() + lC.toString()); :}
+                        |   declarar CORCHETE_ABRE CORCHETE_CIERRA IDENTIFICADOR:id_metodo_val PARENTESIS_ABRE:parR parametros PARENTESIS_CIERRA:parC LLAVE_ABRE:lA funcionalidad retorno_metodo LLAVE_CIERRA:lC        {: resultados2.add(id_metodo_val.toString() + parR.toString() +  parC.toString() + lA.toString() + lC.toString()); :}
+                        ;
+
 
 declarar                ::= TEXTO
                         |   INTEGER
