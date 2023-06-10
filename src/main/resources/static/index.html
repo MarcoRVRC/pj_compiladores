@@ -72,13 +72,16 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('txtPhyton').value = data;
-
                 console.log(data);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     });
+
+
+
+
 </script>
 
 </html>

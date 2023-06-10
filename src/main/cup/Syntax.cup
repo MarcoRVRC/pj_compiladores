@@ -1,6 +1,11 @@
 package umg.compiladores;
 
 import java_cup.runtime.*;
+import java.util.ArrayList;
+parser code {:
+    public ArrayList<Object> resultados = new ArrayList<>();
+    public ArrayList<String> resultados2 = new ArrayList<>();
+:};
 
 terminal SIGUIENTE_DOBLE, SIGUIENTE_BOOL, PRIVADO, PUBLICO, ARGS, MAIN, STATIC;
 terminal Integer DIGITO;
@@ -16,20 +21,25 @@ terminal IN, OR, REPETIR, INTEGER, NUEVO, CASO, BREAK, ADEMAS, LONG, SIGUIENTE, 
 terminal DOBLE, RETORNAR, CAMBIO, SCAN, BOOL, SIGUIENTE_INT, SIGUIENTE_LINEA, SIGUIENTE_LONG, SIGUIENTE_FLOAT, SIGUIENTE_SHORT;
 
 
-non terminal clase, tipo_imprimir, tipo_metodo, imprimir, metodo, metodo_main, funcionalidad, valor,
+non terminal clase, tipo_imprimir, tipo_metodo, imprimir, metodo, metodo_main, funcionalidad, valor, asignar,
                estructuras_control,condiciones, condicional_num, condicional_bool, condicional_string, operador, aritmetica, declarar, parametros, estado_bool, concatenar, retorno_metodo, si, si_multiple,
-               caso;
+               caso, repetir, mientras;
 
 start with clase;
 
-clase                ::= PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE metodo_main LLAVE_CIERRA                                                                                                                {: System.out.println("Nombre de clase : " + nom_clase_val.toString()); :}
-                        |   PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE funcionalidad metodo_main LLAVE_CIERRA                                                                                          {: System.out.println("Nombre de clase : " + nom_clase_val.toString()); :};
 
-metodo_main          ::= PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA             {: RESULT = main_val.toString(); :}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA metodo      {: RESULT = main_val.toString(); :}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA             {: RESULT = main_val.toString(); :}
-                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA metodo      {: RESULT = main_val.toString(); :};
 
+clase                ::= PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE:dos_puntos metodo_main LLAVE_CIERRA                  {: resultados2.add("class " + nom_clase_val.toString() + ": ");:}
+                        |   PUBLICO CLASE IDENTIFICADOR:nom_clase_val LLAVE_ABRE funcionalidad metodo_main LLAVE_CIERRA  {: resultados2.add("class " + nom_clase_val.toString() + ": ");:}
+
+;
+
+
+metodo_main          ::= PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA  {: resultados2.add("def ___init___(self): ");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA metodo      {: resultados2.add("def ___init___(self): ");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA             {: resultados2.add("def ___init___(self): ");:}
+                        |   PUBLICO STATIC VACIO MAIN:main_val PARENTESIS_ABRE TEXTO CORCHETE_ABRE CORCHETE_CIERRA ARGS PARENTESIS_CIERRA LLAVE_ABRE /* ε */ LLAVE_CIERRA metodo      {: resultados2.add("def ___init___(self): ");:}
+;
 metodo                  ::= PUBLICO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :}
                         |   PRIVADO:tipo_metodo_val tipo_metodo                                                                                                                                             {: System.out.println("Metodo : " + tipo_metodo_val.toString()); :};
 
@@ -73,16 +83,22 @@ funcionalidad           ::= imprimir funcionalidad
                         |   DOBLE:tipo_dato_val IDENTIFICADOR:id_metodo_val ASIGNAR DIGITO_DOBLE funcionalidad
                         |   FLOAT:tipo_dato_val funcionalidad                                                   {: System.out.println("Resultado : " + tipo_dato_val.toString()); :}
                         |   DOBLE:tipo_dato_val funcionalidad
-                        |   DIGITO_DOBLE ASIGNAR funcionalidad
                         |   IDENTIFICADOR ASIGNAR aritmetica funcionalidad
                         |   IDENTIFICADOR ASIGNAR estado_bool PUNTO_COMA
-                        |   IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA funcionalidad
+                        | asignar
                         |   TEXTO COMILLAS_DOBLES PUNTO_COMA funcionalidad
+                        |   TEXTO COMILLAS_DOBLES PUNTO_COMA
                         |   PUNTO_COMA funcionalidad
                         |   COMA IDENTIFICADOR funcionalidad
                         |   si funcionalidad
                         |   si_multiple funcionalidad
+                        |   repetir
+                        |   repetir funcionalidad
                         |   PUNTO_COMA;
+
+asignar      ::=    IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA funcionalidad
+                        | IDENTIFICADOR ASIGNAR COMILLAS_DOBLES PUNTO_COMA
+                                         ;
 
 aritmetica              ::= DIGITO operador DIGITO
                         |   DIGITO_DOBLE operador DIGITO_DOBLE
@@ -118,7 +134,8 @@ valor                   ::= DIGITO
                         |   FALSO;
 
 
-si ::=                 SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
+si ::=                 SI:si PARENTESIS_ABRE:par_abre condiciones PARENTESIS_CIERRA:par_cierra LLAVE_ABRE:labre funcionalidad LLAVE_CIERRA:l_cierra
+                                    {: RESULT =  si.toString() + par_abre.toString() ; :}
                                | SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE si LLAVE_CIERRA
                                | SINO LLAVE_ABRE funcionalidad LLAVE_CIERRA
                                | SINO SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
@@ -129,6 +146,7 @@ si ::=                 SI PARENTESIS_ABRE condiciones PARENTESIS_CIERRA LLAVE_AB
 ;
 
 si_multiple     ::= CAMBIO PARENTESIS_ABRE IDENTIFICADOR PARENTESIS_CIERRA LLAVE_ABRE caso LLAVE_CIERRA
+                    | CAMBIO PARENTESIS_ABRE IDENTIFICADOR PARENTESIS_CIERRA LLAVE_ABRE si_multiple LLAVE_CIERRA
 
 ;
 
@@ -169,6 +187,12 @@ condicional_string::=
                 |   DIFERENTE
                 ;
 
+repetir ::= REPETIR PARENTESIS_ABRE INTEGER IDENTIFICADOR ASIGNAR DIGITO PUNTO_COMA IDENTIFICADOR condicional_num DIGITO PUNTO_COMA
+            IDENTIFICADOR SUMA SUMA PARENTESIS_CIERRA LLAVE_ABRE funcionalidad LLAVE_CIERRA
 
+;
+
+mientras ::=
+    ;
 /*funcionalidad_conrtrol ::=
                             ;*/

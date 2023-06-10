@@ -1,9 +1,6 @@
 package com.umg.proyectocompiladores.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umg.compiladores.Lexer;
 
@@ -11,6 +8,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +29,7 @@ public class CompiladorController {
     String ruta = "/archivo/";
 
     @PostMapping(value = "/traducir")
-    public String  traducir(@RequestParam("txtJava") String textoJava,
+    public ArrayList<String>  traducir(@RequestParam("txtJava") String textoJava,
                             @RequestParam("fileJava") MultipartFile fileJava) {
 
         builder.append(ruta);
@@ -47,13 +46,13 @@ public class CompiladorController {
             leerTexto(textoJava);
         } else if (!fileJava.isEmpty()) {
             System.out.println("Se recibio Archivo");
-        return    leerArchivo(fileJava);
+            leerArchivo(fileJava);
         } else if (!textoJava.isEmpty() && !fileJava.isEmpty()) {
             System.out.println("Solo debe ingresar un medio");
         } else {
             System.out.println("No se recibio ninguna entrada");
         }
-        return null;
+        return compilarCup();
     }
 
 
@@ -78,7 +77,6 @@ public class CompiladorController {
 
     public void leerTexto(String txtJava) {
         try (BufferedWriter escritor = new BufferedWriter(new FileWriter(nomArchivo))) {
-            // Escribe la entrada de texto en el archivo
             escritor.write(txtJava);
             System.out.printf("Escritor  " + escritor);
             compilarCup();
@@ -87,16 +85,23 @@ public class CompiladorController {
         }
     }
 
-    public void compilarCup() {
+    public ArrayList<String>  compilarCup() {
         try {
             Reader reader = new FileReader(ruta +  nomArchivo);
             parser p = new parser(new Lexer(reader));
-            Object result = p.parse().value;
+            p.parse();
+            //ArrayList<Object> inverso = new ArrayList<Object>(p.resultados);
+           // Collections.reverse(inverso);
+           // return  inverso;
+            ArrayList<String> inverso = new ArrayList<String>(p.resultados2);
+            Collections.reverse(inverso);
+            return inverso;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CompiladorController.class.getName()).log(Level.SEVERE, "Error al generar en cup ", ex);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
 
